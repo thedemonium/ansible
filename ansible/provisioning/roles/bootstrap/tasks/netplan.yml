@@ -1,0 +1,34 @@
+---
+- name: Configure network interface
+  become: true
+  template:
+    src: iface.j2
+    dest: "/etc/netplan/{{ item.interface }}.yaml"
+    owner: root
+    group: root
+    mode: 0644
+  with_items: "{{ interfaces }}"
+  when: (netplan_change == True and bridgeconf == False)
+  notify:
+    - restart networkd
+
+- name: Configure network bridge interface
+  become: true
+  template:
+    src: iface_bridge.j2
+    dest: "/etc/netplan/{{ item.interface }}.yaml"
+    owner: root
+    group: root
+    mode: 0644
+  with_items: "{{ interfaces }}"
+  when: (netplan_change == True and bridgeconf == True)
+  notify:
+    - restart networkd
+
+
+- name: Apply network interface configuration
+  become: true
+  shell: netplan apply
+  when: netplan_change == True
+
+

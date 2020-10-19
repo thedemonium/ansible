@@ -1,0 +1,12 @@
+galaxy_info:
+  author: Efimov Valentin
+  description: ubuntu server bootstrap
+  company: gifts.ru
+  license: license (GPLv2, CC-BY, etc)
+  min_ansible_version: 1.2
+  platforms:
+   - name: Ubuntu
+     versions:
+     - all
+  galaxy_tags: []
+dependencies: []

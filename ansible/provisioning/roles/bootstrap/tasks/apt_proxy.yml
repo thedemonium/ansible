@@ -1,0 +1,5 @@
+---
+- name: Configure /etc/apt/apt.conf
+  template: src=apt.conf dest=/etc/apt/apt.conf
+  when: proxy_enable == True
+  

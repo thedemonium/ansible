@@ -1,0 +1,9 @@
+---
+- name: Remove snapd package
+  action: apt pkg={{ item }} state=absent purge=yes
+  with_items:
+    - snapd
+  when: snapd_remove == True
+
+
+

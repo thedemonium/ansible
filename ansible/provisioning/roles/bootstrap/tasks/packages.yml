@@ -1,0 +1,7 @@
+---
+- name: Install packages
+  action: apt pkg={{ item }} state=present
+  with_items:
+    - mc
+    - ntp
+    - htop

@@ -1,0 +1,37 @@
+---
+- name: Installing the Zabbix Agent
+  action: apt pkg={{ item }} state=present
+  with_items:
+    - zabbix-agent
+  when: zabbix_agent_enable == True
+
+- name: Set LogFileSize zabbix_agentd.conf
+  action: lineinfile dest=/etc/zabbix/zabbix_agentd.conf regexp="^LogFileSize=" line="LogFileSize=256" state=present backrefs=yes
+  notify: restart zabbix-agent
+  when: zabbix_agent_enable == True
+
+- name: Set EnableRemoteCommands zabbix_agentd.conf
+  action:  lineinfile dest=/etc/zabbix/zabbix_agentd.conf regexp="^# EnableRemoteCommands=0"  line="EnableRemoteCommands=1" state=present backrefs=yes
+  notify: restart zabbix-agent
+  when: zabbix_agent_enable_remotecmd == True
+
+- name: Set EnableRemoteCommands zabbix_agentd.conf
+  action: lineinfile dest=/etc/zabbix/zabbix_agentd.conf  regexp="^Server="  line="Server={{ zabbix_server }}" state=present backrefs=yes
+  notify: restart zabbix-agent
+  when: zabbix_agent_enable == True
+
+- name: Set ServerActive zabbix_agentd.conf
+  action: lineinfile dest=/etc/zabbix/zabbix_agentd.conf regexp="^ServerActive=" line="ServerActive={{ zabbix_server }}" state=present backrefs=yes
+  notify: restart zabbix-agent
+  when: zabbix_agent_enable == True
+
+- name: Set Hostname zabbix_agentd.conf
+  action: lineinfile dest=/etc/zabbix/zabbix_agentd.conf  regexp="^Hostname=" line="Hostname={{ hostname_fqdn }}" state=present backrefs=yes
+  notify: restart zabbix-agent
+  when: zabbix_agent_enable == True
+
+- name: Set Timeout zabbix_agentd.conf
+  action: lineinfile dest=/etc/zabbix/zabbix_agentd.conf regexp="^# Timeout=3" line="Timeout=3" state=present backrefs=yes
+  notify: restart zabbix-agent
+  when: zabbix_agent_enable == True
+

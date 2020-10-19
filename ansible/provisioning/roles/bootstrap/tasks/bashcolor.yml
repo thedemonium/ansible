@@ -1,0 +1,6 @@
+---
+- name: add color prompt script colorprompt.sh
+  template: src=colorprompt.sh dest={{color_prompt_target_file}} owner=root group=root mode=755
+
+- name: Replace skel .bashrc color prompt script
+  template: src=.bashrc dest={{bashrc_color_prompt_target_file}} owner=root group=root mode=644

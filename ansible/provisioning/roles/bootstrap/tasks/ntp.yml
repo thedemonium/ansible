@@ -1,0 +1,3 @@
+- name: Configure /etc/ntp.conf
+  template: src=ntp.conf dest=/etc/ntp.conf
+  notify: restart ntp

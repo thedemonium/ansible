@@ -1,0 +1,17 @@
+- name: Add host entry /etc/hosts
+  lineinfile:
+    dest=/etc/hosts
+    regexp=" {{ hostname_fqdn }} ?"
+    line="{{ item.ipv4.ip }} {{ hostname_fqdn }}"
+    owner=root
+    group=root
+    mode=0644
+  with_items: "{{ interfaces }}"
+  when: hosts_change == True
+
+
+- name: hostnamectl set-hostname
+  become: true
+  shell: hostnamectl set-hostname  {{ hostname_short }} 
+  when: netplan_change == True
+  

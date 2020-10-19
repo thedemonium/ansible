@@ -1,0 +1,19 @@
+---
+# handlers file for bootstrap
+- name: restart ssh
+  action: service name=ssh state=restarted
+
+- name: update tzdata
+  command: /usr/sbin/dpkg-reconfigure --frontend noninteractive tzdata
+
+- name: restart ntp
+  action: service name=ntp state=restarted
+
+- name: restart zabbix-agent
+  action: service name=zabbix-agent state=restarted
+
+- name: restart networkd
+  become: true
+  service:
+    name: systemd-networkd
+    state: restarted

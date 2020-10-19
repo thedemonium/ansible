@@ -1,0 +1,52 @@
+--- 
+# hostname and network parameters
+
+hostname_short: 'astrsk-office-prod'
+hostname_fqdn: 'astrsk-office-prod.local'
+
+
+# change /etc/netplan/ifname.yaml
+netplan_change: False
+bridgeconf: False
+
+interfaces:
+- interface: enp1s0f0
+  ipv4:
+    ip: '192.168.2.10'
+    pref: '/24'
+    dns:
+      nameservers:
+      - 192.168.0.6
+      - 192.168.0.24
+    gate: '192.168.0.3'
+  configured: true
+
+# change /etc/hosts
+hosts_change: True
+
+# ntp-server
+ntp_server: '192.168.0.3'
+
+# proxy
+proxy_enable: True
+proxy_env:
+  http_proxy: '"http://192.168.2.4:3128/";'
+  https_proxy: '"https://192.168.2.4:3128/";'
+
+# locale & timezone
+locale: 'en_US.UTF-8'
+language: 'en_US:en'
+timezone: 'Europe/Moscow'
+
+# snapd remove
+snapd_remove: True
+
+# install zabbix-agent
+zabbix_agent_enable: False
+zabbix_agent_enable_remotecmd: False
+zabbix_server: "192.168.2.25"
+ 
+# bash colors
+color_prompt_target_file: /etc/profile.d/colorprompt.sh
+bashrc_color_prompt_target_file: /etc/skel/.bashrc
+
