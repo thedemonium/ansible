@@ -1,0 +1,9 @@
+---
+- name: copy deb to /tmp
+  copy: src='{{ local_packages_repo }}/megacli/' dest=/tmp/megacli
+- name: install .deb using dpkg
+  apt:
+    deb: '{{ item }}'
+    state: installed
+  with_items:
+    - /tmp/megacli/megacli_8.07.14-2_all.deb

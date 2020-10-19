@@ -1,0 +1,6 @@
+---
+- name: Install Sanoid Syncoid
+  hosts: server
+  become: yes
+  roles:
+    - sanoid_syncoid

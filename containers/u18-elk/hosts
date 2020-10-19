@@ -1,0 +1,8 @@
+[u18-redmine]
+
+u18-elk ansible_connection=lxd
+
+[lxd]
+
+localhost
+

@@ -1,0 +1,8 @@
+[u18-imapsync]
+
+u18-imapsync ansible_connection=lxd
+
+[lxd]
+
+localhost
+

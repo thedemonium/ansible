@@ -1,0 +1,15 @@
+---
+- hosts: localhost
+  connection: local
+  become: true
+  roles:
+    - ../../
+  tasks:
+    - name: "add some iptable rule"
+      iptables:
+        chain: INPUT
+        source: 8.8.8.8
+        jump: DROP
+      become: yes
+      notify:
+        - persist iptables

@@ -1,0 +1,6 @@
+---
+- name: Purge the Zabbix Agent
+  action: apt pkg={{ item }} state=absent purge=yes force=yes
+  with_items:
+    - zabbix-agent
+

@@ -1,0 +1,15 @@
+---
+-
+  hosts: all_ubuntu
+  become: yes
+  tasks:
+    - name: Remove configuration apt.conf
+      file: path=/etc/apt/apt.conf state=absent
+    - name: Configure proxy apt.conf
+      blockinfile:
+        dest: /etc/apt/apt.conf
+        create: yes
+        block: |
+          Acquire::http::Proxy "http://proxy.volhonka.fwheel.com:3128/";
+    - name: Update apt
+      apt: update_cache=yes

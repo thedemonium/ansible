@@ -1,0 +1,64 @@
+---
+- name: Create a profile
+  lxd_profile:
+    name: "{{ profile_name | default('test') }}"
+    config: {}
+    description: test
+    devices:
+        eth0:
+            ipv4.address: "{{ lxc_ip | default('10.9.9.222') }}"
+            name: eth0
+            nictype: bridged
+            parent: lxdbr0
+            type: nic
+        root:
+            path: /
+            pool: default
+            type: disk
+
+- name: Create a started container
+  lxd_container:
+    name: "{{ lxc_name | default('test') }}"
+    state: started
+    source:
+      type: image
+      mode: pull
+      server: https://images.linuxcontainers.org
+      protocol: simplestreams 
+      alias: ubuntu/xenial/amd64
+    profiles: ["{{ profile_name | default('test') }}"]
+    wait_for_ipv4_addresses: true
+    timeout: 600
+
+#- name: register container
+#  add_host:
+#    name: "{{ lxc_name | default('test') }}"
+#    ansible_connection: lxd
+
+- name: Check for Python
+  raw: lxc exec "{{ lxc_name | default('test') }}" -- test -e /usr/bin/python
+  changed_when: false
+  failed_when: false
+  register: check_python
+
+- name: install python in container
+  raw: lxc exec "{{ lxc_name | default('test') }}" -- apt-get --force-yes -y  install  python
+  when: check_python.rc != 0
+
+
+#- name: Install packages
+#  action: apt pkg={{ item }} state=present
+#  with_items:
+#    - mc
+#  delegate_to: "{{ lxc_name | default('test') }}"
+
+#- name: Set up multiple authorized keys
+#  authorized_key:
+#    user: root
+#    state: present
+#    key: '{{ item }}'
+#  with_file:
+#    - public_keys/frank
+#    - public_keys/sdf
+#  register: add_identity_keys
+#  delegate_to: "{{ lxc_name | default('test') }}"

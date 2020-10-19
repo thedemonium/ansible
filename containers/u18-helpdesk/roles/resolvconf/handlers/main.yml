@@ -1,0 +1,5 @@
+---
+- name:       Stop systemd-resolved
+  command:    systemctl stop systemd-resolved
+  listen:     resolvconf stop
+  when:       resolvconf_apply

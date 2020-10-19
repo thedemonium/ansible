@@ -1,0 +1,17 @@
+---
+- name: Install the openssh-server package
+  apt: name=openssh-server state={{ sshd_pkg_state }}
+
+- name: Copy the sshd_config template file
+  template:
+    src: sshd_config.j2
+    dest: "{{ sshd_config_location }}"
+  notify:
+    - restart sshd
+
+- name: Start and enable sshd service
+  service:
+    name: "{{ sshd_service_name }}"
+    state: "{{ sshd_service_state }}"
+    enabled: "{{ sshd_service_enabled }}"
+

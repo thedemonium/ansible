@@ -1,0 +1,8 @@
+---
+-
+  hosts: all_ubuntu
+  become: yes
+  tasks:
+    - name: imstall latest mc
+      apt: name=mc state=latest
+

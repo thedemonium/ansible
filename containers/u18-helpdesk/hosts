@@ -1,0 +1,8 @@
+[u18-helpdesk]
+
+u18-helpdesk ansible_connection=lxd
+
+[lxd]
+
+localhost
+

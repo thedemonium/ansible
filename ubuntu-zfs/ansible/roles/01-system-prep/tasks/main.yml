@@ -1,0 +1,110 @@
+---
+- name: ensure live system has necessary packages installed
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - mdadm
+    - debootstrap
+    - gdisk
+    - zfs-initramfs
+- name: forcibly zap disks
+  shell: "mdadm --zero-superblock --force {{ item }} && sgdisk --zap-all {{ item }}"
+  with_items:
+    - "{{ zfsprep_target_disks }}"
+  when: zfsprep_zap_disks | default(false) | bool == true
+- name: set up root disk partitions
+  shell: "sgdisk {{ zfsprep_partition_flags }} {{ item }}"
+  with_items:
+    - "{{ zfsprep_root_device_list }}"
+- name: set up data disk partitions
+  shell: "sgdisk {{ zfsprep_data_partition_flags }} {{ item }}"
+  when: zfsprep_data_partitions | default(false) | bool == true
+  with_items:
+    - "{{ zfsprep_data_device_list }}"
+  when: zfsprep_data_partitions | default(false) | bool == true
+- name: set up LUKS devices
+  shell: "echo {{ zfsprep_luks_passphrase }} | cryptsetup luksFormat {{ zfsprep_luks_flags }} {{ item.0 }} && echo {{ zfsprep_luks_passphrase }} | cryptsetup luksOpen {{ item.0 }} {{ item.1 }}"
+  with_together:
+    - "{{ (zfsprep_root_device_list | map('regex_replace', '(.*)', '\\g<1>' + zfsprep_root_part_append) | list) + (zfsprep_data_partitions | ternary((zfsprep_data_device_list | map('regex_replace', '(.*)', '\\g<1>' + zfsprep_data_part_append) | list),zfsprep_data_device_list)) }}"
+    - "{{ zfsprep_luks_root_names + zfsprep_luks_data_names }}"
+  when: zfsprep_luks | default(false) | bool == true
+- name: create root zpool
+  shell: "zpool create {{ zfsprep_root_pool_opts | join(' ') }} {{ zfsprep_root_pool }} {{ zfsprep_root_pool_type }} {{ (zfsprep_luks | default(false) | bool == true) | ternary(zfsprep_luks_root_names | map('regex_replace', '(.*)', '/dev/mapper/\\g<1>') | list, zfsprep_root_device_list | map('regex_replace', '(.*)', '\\g<1>' + zfsprep_root_part_append) | list) | join(' ') }}"
+- name: create root dataset
+  zfs:
+    name: "{{ zfsprep_root_pool }}/ROOT"
+    state: present
+    extra_zfs_properties:
+      canmount: off
+      mountpoint: none
+- name: create root fs
+  zfs:
+    name: "{{ zfsprep_root_pool }}/ROOT/ubuntu"
+    state: present
+    extra_zfs_properties:
+      canmount: noauto
+      mountpoint: /
+- name: manually mount rpool/ROOT/ubuntu before creating other mountpoints
+  shell: "zfs mount {{ zfsprep_root_pool }}/ROOT/ubuntu"
+- name: create mountpoints in root pool
+  zfs:
+    name: "{{ item.name }}"
+    state: present
+    extra_zfs_properties:
+      "{{ item.properties }}"
+  with_items:
+    - "{{ zfsprep_root_volumes }}"
+- name: chmod 01777 /mnt/var/tmp
+  file:
+    path: /mnt/var/tmp
+    mode: 01777
+- name: create data zpool
+  shell: "zpool create {{ zfsprep_data_pool_opts | join(' ') }} {{ zfsprep_data_pool }} {{ zfsprep_data_pool_type }} {{ (zfsprep_luks | default(false) | bool == true) | ternary(zfsprep_luks_data_names | map('regex_replace', '(.*)', '/dev/mapper/\\g<1>') | list, (zfsprep_data_partitions | ternary((zfsprep_data_device_list | map('regex_replace', '(.*)', '\\g<1>' + zfsprep_data_part_append) | list),zfsprep_data_device_list))) | join(' ') }}"
+  when: zfsprep_data_disks | length > 0
+- name: create data dataset
+  zfs:
+    name: "{{ zfsprep_data_pool }}/data"
+    state: present
+    extra_zfs_properties:
+      mountpoint: /data
+  when: zfsprep_data_disks | length > 0
+- name: create md0 for LUKS
+  shell: "echo yes | mdadm --create /dev/md0 --level=1 --raid-devices={{ zfsprep_root_device_list | length }} {{ zfsprep_root_device_list | map('regex_replace', '(.*)', '\\g<1>' + zfsprep_crypt_part_append) | list | join(' ') }}"
+  when: (zfsprep_root_device_list | length > 1) and (zfsprep_luks | default(false) | bool == true)
+- name: format and mount /mnt/boot for LUKS
+  shell: "mke2fs -t ext2 {{ item }} && mkdir /mnt/boot && mount {{ item }} /mnt/boot"
+  with_items:
+    - "{{ (zfsprep_root_device_list | length > 1) | ternary('/dev/md0', (zfsprep_root_device_list | map('regex_replace', '(.*)', '\\g<1>' + zfsprep_crypt_part_append) | list).0) }}"
+  when: zfsprep_luks | default(false) | bool == true
+- name: run debootstrap and set devices=off for root pool
+  shell: "debootstrap {{ zfsprep_ubuntu_release }} /mnt && zfs set devices=off {{ zfsprep_root_pool }}"
+- name: set devices=off for data pool
+  shell: "zfs set devices=off {{ zfsprep_data_pool }}"
+  when: zfsprep_data_disks | length > 0
+- name: write /etc/hostname in chroot
+  copy:
+    content: "{{ zfsprep_hostname.short }}"
+    dest: /mnt/etc/hostname
+- name: write default network config in chroot
+  template:
+    src: network.j2
+    dest: "/mnt/etc/systemd/network/{{ zfsprep_netplan_interface }}.network"
+- name: write /etc/apt/sources.list in chroot
+  template:
+    src: sources.j2
+    dest: /mnt/etc/apt/sources.list
+- name: add hostname entries to /etc/hosts in chroot
+  lineinfile:
+    line: "127.0.0.1 {{ zfsprep_hostname.short }} {{ zfsprep_hostname.long }}"
+    path: /mnt/etc/hosts
+    state: present
+    insertbefore: BOF
+- name: mount special filesystems for chroot
+  shell: "mount --rbind {{ item }}"
+  with_items:
+    - /dev /mnt/dev
+    - /proc /mnt/proc
+    - /sys /mnt/sys
+  args:
+    warn: false

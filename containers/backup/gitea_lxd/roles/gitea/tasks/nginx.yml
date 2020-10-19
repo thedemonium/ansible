@@ -1,0 +1,12 @@
+- name: "Install nginx"
+  apt:
+    pkg:
+      - nginx
+    state: present
+
+
+- name: "Configure nginx"
+  template:
+    src: git.conf 
+    dest: /etc/nginx/conf.d/git.conf 
+  notify: "Restart nginx"

@@ -1,0 +1,6 @@
+---
+- name: Bootstrap Ubuntu servers
+  hosts: server
+  become: yes
+  roles:
+    - bootstrap

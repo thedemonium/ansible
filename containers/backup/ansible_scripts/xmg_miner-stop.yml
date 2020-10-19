@@ -1,0 +1,17 @@
+---
+-
+  hosts: miners
+  become: yes
+  tasks:
+    - name: stop screen session
+      command: screen -S nheqminer -p 0 -X quit
+    - name: killall miners
+      command: killall -KILL nheqminer
+
+
+
+
+
+
+
+

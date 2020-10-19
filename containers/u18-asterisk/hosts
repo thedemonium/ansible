@@ -1,0 +1,8 @@
+[u18-asterisk]
+
+u18-asterisk ansible_connection=lxd
+
+[lxd]
+
+localhost
+

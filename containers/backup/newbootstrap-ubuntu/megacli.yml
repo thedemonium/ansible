@@ -1,0 +1,6 @@
+---
+- name: Install Megacli
+  hosts: server
+  become: yes
+  roles:
+    - megacli

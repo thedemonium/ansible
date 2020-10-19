@@ -1,0 +1,20 @@
+---
+-
+  hosts: all_ubuntu
+  become: yes
+  tasks:
+    - name: Remove configuration resolvconf
+      file: path=/etc/resolvconf/resolv.conf.d/base state=absent
+    - name: Configure resolvconf
+      blockinfile:
+        dest: /etc/resolvconf/resolv.conf.d/base
+        create: yes
+        block: |
+          nameserver 192.168.50.125
+          nameserver 192.168.50.124
+          search volhonka.fwheel.com fwheel.com
+          options rotate
+          options timeout:1
+    - name: Update resolvconf
+      command: resolvconf -u
+

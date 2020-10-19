@@ -1,0 +1,6 @@
+---
+- name: Zabbix Agent Installation
+  hosts: server
+  become: yes
+  roles:
+    - zabbix-agent

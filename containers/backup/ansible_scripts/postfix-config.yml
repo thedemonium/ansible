@@ -1,0 +1,23 @@
+---
+-
+  hosts: all_ubuntu
+  become: yes
+  tasks:
+    - name: mydestination /etc/postfix/main.cf
+#      replace: dest="/etc/postfix/main.cf" regexp='mydestination' replace='mydestination = $myhostname,  $mydomain, localhost.$mydomain, localhost' backup=yes
+      lineinfile: dest="/etc/postfix/main.cf" regexp='^mydestination' line='mydestination = $myhostname,  $mydomain, localhost.$mydomain, localhost'  backup=yes
+    - name: inet_protocols /etc/postfix/main.cf
+      lineinfile: dest="/etc/postfix/main.cf" regexp='^inet_protocols' line='inet_protocols = ipv4'  backup=yes
+    - name: smtpd_banner /etc/postfix/main.cf
+      lineinfile: dest="/etc/postfix/main.cf" regexp='^smtpd_banner' line='smtpd_banner = $myhostname ESMTP $mail_name'  backup=yes
+    - name: mynetworks /etc/postfix/main.cf
+      lineinfile: dest="/etc/postfix/main.cf" regexp='^mynetworks' line='mynetworks = 127.0.0.0/8'  backup=yes
+    - name: myorigin /etc/postfix/main.cf
+      lineinfile: dest="/etc/postfix/main.cf" regexp='^myorigin' line='myorigin = $myhostname'  backup=yes
+    - name: smtp_helo_name /etc/postfix/main.cf
+      lineinfile: dest="/etc/postfix/main.cf" regexp='^smtp_helo_name' line='smtp_helo_name = $myhostname' create=yes backup=yes
+
+
+
+
+

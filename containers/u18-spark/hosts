@@ -1,0 +1,8 @@
+[u18-spark]
+
+u18-spark ansible_connection=lxd
+
+[lxd]
+
+localhost
+

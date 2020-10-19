@@ -1,0 +1,14 @@
+---
+- name: Install Fail2Ban Server
+  hosts: server
+  become: yes
+  roles:
+    - fail2ban
+
+  vars:
+    fail2ban_services:
+      - name: sshd
+        port: 22
+        maxretry: 5
+        bantime: -1
+

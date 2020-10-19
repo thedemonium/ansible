@@ -1,0 +1,28 @@
+---
+-
+  hosts: all_ubuntu
+  become: yes
+  tasks:
+    - name: ansible_env->HOME
+      sudo: yes
+      sudo_user: administrator
+      debug: msg="{{ ansible_env.HOME }}"
+    - replace: dest="{{ ansible_env.HOME }}/.config/mc/ini" regexp='skin=default' replace='skin=dark' backup=yes
+    - replace: dest="{{ ansible_env.HOME }}/.config/mc/ini" regexp='message_visible=1' replace='message_visible=0' backup=yes
+    - shell: update-alternatives --set editor /usr/bin/mcedit
+
+    - name: echo $HOME
+      sudo: yes
+      sudo_user: administrator
+      shell: "echo $HOME"
+      register: administrator_homedir
+
+    - name: administrator_homedir.stdout
+      sudo: yes
+      sudo_user: administrator
+      debug: msg="{{ administrator_homedir.stdout }}"
+    - replace: dest="{{ administrator_homedir.stdout }}/.config/mc/ini" regexp='skin=default' replace='skin=dark' backup=yes
+    - replace: dest="{{ administrator_homedir.stdout }}/.config/mc/ini" regexp='message_visible=1' replace='message_visible=0' backup=yes
+    - shell: update-alternatives --set editor /usr/bin/mcedit
+
+

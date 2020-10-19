@@ -1,0 +1,14 @@
+---
+- name: 'create hosts'
+  become: true
+  template:
+    src: 'etc/hosts.j2'
+    dest: '/etc/hosts'
+    backup: '{{ hosts_backup }}'
+    group: '{{ hosts_group }}'
+    owner: '{{ hosts_owner }}'
+    mode: '{{ hosts_mode }}'
+#- debug: var=ansible_all_ipv4_addresses
+#- debug: var=ansible_eth0_ipv4_addresses
+#- debug: var=ansible_default_ipv4.address
+#- debug: var=hostvars[inventory_hostname]['ansible_default_ipv4']['address']

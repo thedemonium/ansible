@@ -1,0 +1,8 @@
+[u18-webserver]
+
+u18-webserver ansible_connection=lxd
+
+[lxd]
+
+localhost
+

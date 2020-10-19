@@ -1,0 +1,25 @@
+---
+- name: Create a new host or update an existing hosts info
+  local_action:
+    module: zabbix_host
+    server_url: http://zabbix.local/zabbix
+    login_user: vefimov
+    login_password: YF{EQblb&*
+    host_name: "{{ ansible_nodename }}"
+    visible_name: "{{ ansible_nodename }}"
+    host_groups:
+      - Linux Containers
+    link_templates:
+      - Template Module ICMP Ping
+      - Template App Zabbix Agent
+    status: enabled
+    state: present
+    inventory_mode: automatic
+    interfaces:
+      - type: 1
+        main: 1
+        useip: 1
+        ip: 192.168.2.9
+        dns: ""
+        port: 10050
+

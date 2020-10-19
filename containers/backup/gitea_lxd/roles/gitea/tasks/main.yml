@@ -1,0 +1,6 @@
+---
+- include: postgresql.yml
+#- include: nginx.yml
+- include: install_systemd.yml
+  when: ansible_service_mgr == "systemd"
+- include: gitea.yml

@@ -1,0 +1,38 @@
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+#
+# Entries in this file show the compile time defaults.
+# You can change settings by editing this file.
+# Defaults can be restored by simply deleting this file.
+#
+# See resolved.conf(5) for details
+
+[Resolve]
+{% if resolved_configuration['dns'] is defined %}
+DNS={{ resolved_configuration.dns }}
+{% endif %}
+{% if resolved_configuration['fdns'] is defined %}
+FallbackDNS={{ resolved_configuration.fdns }}
+{% endif %}
+{% if resolved_configuration['domain'] is defined %}
+Domains={{ resolved_configuration.domain }}
+{% endif %}
+{% if resolved_configuration['llmnr'] is defined %}
+LLMNR={{ resolved_configuration.llmnr }}
+{% endif %}
+{% if resolved_configuration['mdns'] is defined %}
+MulticastDNS={{ resolved_configuration.mdns }}
+{% endif %}
+{% if resolved_configuration['dnssec'] is defined %}
+DNSSEC={{ resolved_configuration.dnssec }}
+{% endif %}
+{% if resolved_configuration['cache'] is defined %}
+Cache={{ resolved_configuration.cache }}
+{% endif %}
+{% if resolved_configuration['dnsstub'] is defined %}
+DNSStubListener={{ resolved_configuration.dnsstub }}
+{% endif %}

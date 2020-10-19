@@ -1,0 +1,11 @@
+---
+-
+  hosts: test_linux
+  become: yes
+  tasks:
+    - name: install latest atop
+      apt: name=atop state=latest
+
+    - name: install latest htop
+      apt: name=htop state=latest
+

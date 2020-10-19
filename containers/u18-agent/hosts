@@ -1,0 +1,5 @@
+[u18-agent]
+u18-agent ansible_connection=lxd
+
+[lxd]
+localhost

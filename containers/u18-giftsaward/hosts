@@ -1,0 +1,8 @@
+[u18-giftsaward]
+
+u18-giftsaward ansible_connection=lxd
+
+[lxd]
+
+localhost
+

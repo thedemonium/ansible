@@ -1,0 +1,7 @@
+---
+- name: Update TZDATA
+  command: /usr/sbin/dpkg-reconfigure --frontend noninteractive tzdata
+  listen: dpkg-reconfigure apply
+  when: locale_apply
+
+

@@ -1,0 +1,19 @@
+---
+- name: Generate locale
+  command: /usr/sbin/locale-gen {{ locale }}
+  become: true
+
+- name: Set locale
+  command: /usr/sbin/update-locale LANG={{ locale }} LC_ALL={{ locale }} LANGUAGE={{ language }}
+  become: true
+
+- name: Set /etc/localtime
+  file:
+    src: /usr/share/zoneinfo/{{ timezone }}
+    dest:  /etc/localtime
+  become: true
+
+- name: Set timezone (/etc/timezone)
+  template: src=templates/locale/timezone dest=/etc/timezone
+  become: true
+  notify: dpkg-reconfigure apply

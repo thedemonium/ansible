@@ -1,0 +1,164 @@
+##### Create lxd container #####
+---
+- name: "Create lxd container"
+  hosts: lxd
+  become: yes
+  connection: local
+  roles:
+    - lxd
+  vars:
+    profile_name: default
+    lxc_name: u18-blackhost
+    limits_cpu: 2
+    limits_memory: 4192MB
+    security_privileged: "false"
+    boot_autostart: "true"
+    boot_autostart_delay: "10"
+
+##### Container netplan setup #####
+- name: "Container netplan setup"
+  become: yes
+  hosts: u18-blackhost
+  roles:
+    - netplan
+  vars:
+    netplan_config_file: /etc/netplan/config.yaml
+    netplan_enabled: true
+    netplan_apply: true
+    netplan_renderer: networkd
+    netplan_pri_domain: local
+    netplan_configuration:
+      network:
+        version: 2
+        renderer: networkd
+        ethernets:
+          eth0:
+            dhcp4: false
+            dhcp6: false
+            optional: true
+            addresses:
+              [192.168.2.31/24]
+            gateway4: 192.168.2.3
+            nameservers:
+              addresses: [192.168.0.6, 192.168.0.24]
+
+##### Container resolvconf setup #####
+- name: "Container resolvconf setup"
+  become: yes
+  hosts: u18-blackhost
+  roles:
+    - resolvconf
+  vars:
+    resolvconf_enabled: true
+    resolvconf_apply: true
+
+##### Container systemd-resolved setup #####
+- name: "Container systemd-resolved setup"
+  become: yes
+  hosts: u18-blackhost
+  roles:
+    - resolved
+  vars:
+    resolved_enabled: true
+    resolved_apply: true
+    resolved_config_file: /etc/systemd/resolved.conf
+    resolved_configuration:
+#      dns: 192.168.0.6
+#      fdns: 192.168.0.24
+#      domain: local
+#      llmnr:
+#      mdns:
+#      dnssec:
+#      cache:
+      dnsstub: no
+
+##### Container locale and timezone setup #####
+- name: "Container locale setup"
+  become: yes
+  hosts: u18-blackhost
+  roles:
+    - locale
+  vars:
+    locale_enabled: true
+    locale_apply: true
+    locale: 'en_US.UTF-8'
+    language: 'en_US:en'
+    timezone: 'Europe/Moscow'
+
+##### Container chrony setup #####
+- name: "Container chrony setup"
+  become: yes
+  hosts: u18-blackhost
+  roles:
+    - chrony
+  vars:
+    chrony_enabled: true
+    chrony_apply: true
+    chrony_pkg_state: present
+    chrony_service_state: started
+    chrony_service_enabled: yes
+    chrony_config_server: [192.168.0.3, pool.ntp.org]
+    chrony_config_logdir: /var/log/chrony
+    chrony_config_extra_options: {}
+    chrony_service_name: chrony
+    chrony_config_location: /etc/chrony/chrony.conf
+    chrony_config_driftfile: /var/lib/chrony/chrony.drift
+    chrony_config_keyfile: /etc/chrony/chrony.keys
+
+
+##### Container sshd setup #####
+- name: "Container sshd setup"
+  become: yes
+  hosts: u18-blackhost
+  roles:
+    - openssh-server
+  vars:
+    sshd_enabled: true
+    sshd_apply: true
+    sshd_pkg_state: present
+    sshd_service_state: started
+    sshd_service_enabled: yes
+    sshd_service_name: sshd
+    sshd_config_location: /etc/ssh/sshd_config
+
+##### Container users setup #####
+- name: "Container users setup"
+  become: yes
+  hosts: u18-blackhost
+  roles:
+    - adduser
+  vars:
+    adduser_user_name: demonium
+    adduser_user_home: '/home/demonium'
+    adduser_user_home_perms: '0700'
+    adduser_user_comments: "Valentin Efimov"
+    adduser_sudoroot: true
+    adduser_sudoroot_nopasswd: true
+    adduser_sudoroot_nopasswd_cmd: 'ALL'
+    adduser_password: '$6$.AsX.MGDf1ijU$oHxGnGikaGj8E.v9z2TXpTRP2Nq0KxPnEXgkj0Yl8DqwMmyMdPPUp8YHNlKT6OGAbf6QNPnnjmSTPXFLH9w.D.'
+    adduser_password_update: on_create
+    adduser_shell: '/bin/bash'
+    adduser_groups:
+    - sudo
+    adduser_public_keys:
+    - demonium.pub
+
+##### Container apt setup #####
+- name: "Container apt setup"
+  become: yes
+  hosts: u18-blackhost
+  roles:
+    - apt
+  vars:
+    apt_enabled: true
+    apt_proxy_enabled: false
+    apt_packages: [mc, htop, lsof]
+    apt_remove_packages: [snapd]
+
+##### Container nginx install and setup #####
+- name: "Container nginx install and setup"
+  become: yes
+  hosts: u18-blackhost
+  roles:
+    - nginx
+#  vars:

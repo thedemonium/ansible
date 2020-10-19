@@ -1,0 +1,13 @@
+---
+-
+  hosts: all_ubuntu
+  become: yes
+  tasks:
+    -
+      apt_repository: "repo='ppa:eugenesan/ppa' state=present validate_certs=no"
+      environment:
+        http_proxy: "http://proxy.volhonka.fwheel.com:3128"
+        https_proxy: "http://proxy.volhonka.fwheel.com:3128"
+      name: "Add repositories"
+    -
+      apt: "name=mc update_cache=yes"

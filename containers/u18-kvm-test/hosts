@@ -1,0 +1,8 @@
+[u18-kvm-test]
+
+u18-kvm-test ansible_connection=lxd
+
+[lxd]
+
+localhost
+

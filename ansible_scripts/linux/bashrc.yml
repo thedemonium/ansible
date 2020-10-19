@@ -1,0 +1,22 @@
+---
+-
+  hosts: test_linux
+  become: yes
+  tasks:
+    - name: configure prompt administrator
+      sudo: yes
+      sudo_user: administrator
+      debug: msg="{{ ansible_env.HOME }}"
+    - lineinfile: dest="{{ ansible_env.HOME }}/.bashrc" regexp="^PS1=" line="PS1='\[\e[00;31m\]\u\[\e[0m\]\[\e[00;37m\]@\h \[\e[0m\]\[\e[00;36m\]\w\[\e[0m\]\[\e[00;37m\] \\$ \[\e[0m\]'" backup=yes
+
+    - name: echo $HOME
+      sudo: yes
+      sudo_user: administrator
+      shell: "echo $HOME"
+      register: administrator_homedir
+
+    - name: configure prompt root
+      sudo: yes
+      sudo_user: administrator
+      debug: msg="{{ administrator_homedir.stdout }}"
+    - lineinfile: dest="{{ administrator_homedir.stdout }}/.bashrc" regexp="^PS1=" line="PS1='\[\e[00;31m\]\u\[\e[0m\]\[\e[00;37m\]@\h \[\e[0m\]\[\e[00;36m\]\w\[\e[0m\]\[\e[00;37m\] \\$ \[\e[0m\]'" backup=yes

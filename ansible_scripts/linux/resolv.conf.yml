@@ -1,0 +1,20 @@
+---
+-
+  hosts: test_linux
+  become: yes
+  tasks:
+    - name: Remove configuration resolvconf
+      file: path=/etc/resolvconf/resolv.conf.d/base state=absent
+    - name: Configure resolvconf
+      blockinfile:
+        dest: /etc/resolvconf/resolv.conf.d/base
+        create: yes
+        block: |
+          nameserver 172.31.193.70
+          nameserver 172.31.193.71
+          search lt.local
+          options rotate
+          options timeout:1
+    - name: Update resolvconf
+      command: resolvconf -u
+

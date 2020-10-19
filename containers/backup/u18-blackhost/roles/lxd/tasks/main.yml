@@ -1,0 +1,33 @@
+---
+- name: Create a started container
+  lxd_container:
+    name: "{{ lxc_name | default('u18-host') }}"
+    state: started
+    trust_password: TrustMe
+    url: https://192.168.64.46:8443
+    source:
+      type: image
+      alias: u18-blank
+    profiles: ["{{ profile_name | default('default') }}"]
+    wait_for_ipv4_addresses: no
+    timeout: 600
+
+- name: Set limits.cpu
+  raw: lxc config set "{{ lxc_name | default('u18-host') }}" limits.cpu "{{ limits_cpu }}"
+  when: limits_cpu != []
+
+- name: Set limits.memory
+  raw: lxc config set "{{ lxc_name | default('u18-host') }}" limits.memory "{{ limits_memory }}"
+  when: limits_memory != []
+
+- name: Set security.privileged
+  raw: lxc config set "{{ lxc_name | default('u18-host') }}" security.privileged "{{ security_privileged }}"
+  when: security_privileged != []
+
+- name: Set boot.autostart
+  raw: lxc config set "{{ lxc_name | default('u18-host') }}" boot.autostart "{{ boot_autostart }}"
+  when: boot_autostart != []
+
+- name: Set boot.autostart.delay
+  raw: lxc config set "{{ lxc_name | default('u18-host') }}" boot.autostart.delay "{{ boot_autostart_delay }}"
+  when: boot_autostart_delay != []

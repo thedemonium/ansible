@@ -1,0 +1,12 @@
+---
+-
+  hosts: test_ubuntu
+  become: yes
+  tasks:
+    - name: Update apt
+      apt: update_cache=yes
+    - name: imstall latest debconf-utils
+      apt: name=mc state=latest
+    - name: imstall latest ocsinventory-agent
+      apt: name=mc state=latest
+

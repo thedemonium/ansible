@@ -1,0 +1,30 @@
+- name: "Install dependencies"
+  apt:
+    pkg:
+      - postgresql
+      - python3-psycopg2
+      - python-psycopg2
+    state: present
+
+
+- name: Create postgres user
+  become: true
+  become_user: postgres
+  postgresql_user:
+    name: "{{ gitea_db_name }}"
+    password: "{{ gitea_db_password }}"
+
+
+- name: create postgresql db
+  postgresql_db:
+    name: "{{ gitea_db_name }}"
+    state: present
+    owner: "{{ gitea_db_user }}"
+  become: true
+  become_user: postgres
+
+
+
+
+
+

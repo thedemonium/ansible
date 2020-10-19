@@ -1,0 +1,86 @@
+[server]
+
+#lxc-office2
+#192.168.0.194
+#lxc-office2.local
+
+# lxc-office3
+#192.168.0.156
+#lxc-office3.local
+
+##fileserver
+#192.168.0.4
+
+## Vertica-prod
+#192.168.2.20
+
+# msk.gifts.ru
+#192.168.200.1
+
+# astrsk-office-prod
+#192.168.0.112
+
+##QCT01
+#192.168.64.9
+
+##QCT02
+#192.168.0.8
+#QCT02.local
+
+##new server PSK
+#192.168.0.80
+#lxc-psk.local
+
+##EVE NG
+#192.168.0.78
+
+##MONTARUS
+#172.16.10.10
+
+##sec.komposerv.ru
+#sec.komposerv.ru
+
+#u16pg-gifts-prod
+#192.168.0.13
+
+#u18-pgfresh
+#192.168.2.27
+
+#u18-netprobe
+#192.168.0.242
+
+##SELF
+#192.168.0.56
+
+##kev test
+#192.168.0.241
+
+##u16-tablo
+#192.168.2.61
+
+#u18-store111
+#195.70.195.42
+
+#asterisk
+#192.168.0.112
+
+#u18-webportal
+#192.168.2.19
+
+#Store111
+#79.134.214.218
+
+#MX2 z117 zimbra
+#134.209.227.250
+
+#fat.local
+#192.168.0.4
+
+#QCT03
+#192.168.0.26
+
+#http://merchnews.ru
+#merchnews.ru
+
+#http://store111.ru
+#store111.ru

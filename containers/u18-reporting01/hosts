@@ -1,0 +1,8 @@
+[u18-reporting01]
+
+u18-reporting01 ansible_connection=lxd
+
+[lxd]
+
+localhost
+

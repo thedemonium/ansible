@@ -1,0 +1,3 @@
+---
+- import_tasks: resolvconf.yml
+  when: resolvconf_enabled

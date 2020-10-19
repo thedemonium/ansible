@@ -1,0 +1,6 @@
+---
+- name: Install Fish Shell
+  hosts: server
+  become: yes
+  roles:
+    - fish

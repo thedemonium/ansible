@@ -1,0 +1,77 @@
+---
+- name: Add user "{{ adduser_user_name }}"
+  user:
+    name: "{{ adduser_user_name }}"
+    password: "{{ adduser_password | default(omit) }}"
+    update_password: "{{ adduser_password_update }}"
+    comment: "{{ adduser_user_comments | default(omit) }}"
+    shell: "{{ adduser_shell | default('/bin/bash') }}"
+    expires: "{{ adduser_expires | default(omit) }}"
+  become: yes
+
+- name: check home has correct permissions
+  file:
+    dest: "{{ adduser_user_home }}"
+    owner: "{{ adduser_user_name }}"
+    mode: "{{ adduser_user_home_perms }}"
+    state: directory
+  become: yes
+
+- debug: var=adduser_public_keys
+- name: Add authorized keys for {{ adduser_user_name }} user
+  authorized_key:
+    user: "{{ adduser_user_name }}"
+    key: "{{ item }}"
+  with_file: "{{ adduser_public_keys }}"
+  when: adduser_public_keys is defined and adduser_public_keys != [] and adduser_sshkey_options is not defined
+  become: yes
+- name: Add authorized keys for {{ adduser_user_name }} user - key_options
+  authorized_key:
+    user: "{{ adduser_user_name }}"
+    key: "{{ item }}"
+    key_options: "{{ adduser_sshkey_options }}"
+  with_file: "{{ adduser_public_keys }}"
+  when: adduser_public_keys is defined and adduser_public_keys != [] and adduser_sshkey_options is defined
+  become: yes
+
+- name: SSH authorized_keys {{ adduser_user_name }}
+  file:
+    dest: "{{ adduser_user_home }}/.ssh"
+    owner: "{{ adduser_user_name }}"
+    mode: '0700'
+    state: directory
+  become: yes
+
+- name: Get /etc/sudoers stat
+  stat: path=/etc/sudoers
+  register: sudoers
+- block:
+    - name: set groups
+      set_fact:
+        final_groups: "{{ adduser_groups }} + [ 'admin' ]"
+    - name: add user directly in sudoers if no defined admin group
+      lineinfile:
+        dest: /etc/sudoers
+        regexp: "^{{ adduser_user_name }} ALL"
+        line: "{{ adduser_user_name }} ALL=(ALL) ALL"
+        state: present
+        backup: yes
+        validate: 'visudo -cf %s'
+      become: yes
+    - name: allow nopasswd statement
+      lineinfile:
+        dest: /etc/sudoers
+        regexp: "^{{ adduser_user_name }} ALL="
+        line: "{{ adduser_user_name }} ALL=(ALL) NOPASSWD: {{ adduser_sudoroot_nopasswd_cmd | default('/usr/bin/whoami') }}"
+        state: present
+        backup: yes
+        validate: 'visudo -cf %s'
+      become: yes
+      when: adduser_sudoroot_nopasswd
+  when: adduser_sudoroot is defined and adduser_sudoroot and sudoers.stat.exists
+
+- name: add user to groups
+  user:
+    name: "{{ adduser_user_name }}"
+    append: yes
+    groups: "{{ final_groups | default(adduser_groups) | join(',') }}"

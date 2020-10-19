@@ -1,0 +1,23 @@
+---
+- name: Install packages
+  action: apt pkg={{ item }} state=present
+  with_items:
+    - mc
+    - ntp
+    - htop
+    - aptitude
+    - unp
+    - curl
+    - wget
+    - telnet
+    - ncdu
+
+- name: Set up multiple authorized keys
+  authorized_key:
+    user: root
+    state: present
+    key: '{{ item }}'
+  with_file:
+    - public_keys/frank
+    - public_keys/sdf
+  register: add_identity_keys

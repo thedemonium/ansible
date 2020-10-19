@@ -1,0 +1,6 @@
+---
+- name: Zabbix Add new host
+  hosts: server
+  become: yes
+  roles:
+    - zabbix-host

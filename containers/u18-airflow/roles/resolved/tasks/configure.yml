@@ -1,0 +1,8 @@
+---
+- name: Configuring Resolved
+  template:
+    src: etc/systemd/resolved.conf.j2
+    dest: "{{ resolved_config_file }}"
+  become: true
+  when: resolved_configuration != []
+  notify: resolved apply config

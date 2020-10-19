@@ -1,0 +1,8 @@
+# {{ ansible_managed }}
+# The following lines are desirable for IPv4 capable hosts
+{% if hosts_hostname_loopback %}
+127.0.1.1 {{ inventory_hostname | lower }}
+{% endif %}
+127.0.0.1 localhost
+{{ ansible_eth0.ipv4.address }} {{ inventory_hostname | lower }}
+

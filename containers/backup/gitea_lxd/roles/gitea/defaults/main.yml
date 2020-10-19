@@ -1,0 +1,57 @@
+---
+gitea_version: "1.9.4"
+gitea_version_check: true
+
+gitea_app_name: "Gitea"
+gitea_user: "git"
+gitea_home: "/home/git"
+gitea_shell: "/bin/false"
+
+gitea_user_repo_limit: -1
+
+gitea_http_domain: git.mydomain.localnet
+gitea_root_url: http://git.mydomain.localnet
+gitea_ssh_domaain: git.mydomain.localnet
+gitea_protocol: http
+gitea_http_listen: 127.0.0.1
+gitea_http_port: 3000
+gitea_disable_http_git: false
+gitea_offline_mode: true
+
+gitea_lfs_server_enabled: false
+gitea_lfs_content_path: "data/lfs"
+
+gitea_db_type: postgres
+gitea_db_host: 127.0.0.1:5432
+gitea_db_name: gitea
+gitea_db_user: gitea
+gitea_db_password: "XXXXXXXXXXXXXX"
+gitea_db_ssl: disable
+gitea_db_path: "{{ gitea_home }}/data/gitea.db"
+
+gitea_ssh_listen: 0.0.0.0
+gitea_ssh_domain: localhost
+gitea_start_ssh: true
+gitea_ssh_port: 22
+
+
+gitea_show_user_email: false
+gitea_disable_gravatar: true
+gitea_disable_registration: false
+gitea_show_registration_button: true
+gitea_require_signin: true
+gitea_enable_captcha: true
+
+gitea_force_private: false
+
+gitea_mailer_enabled: false
+gitea_mailer_skip_verify: false
+gitea_mailer_tls_enabled: false
+gitea_mailer_host: relay.mydomain.com:25
+gitea_mailer_from: git@mydomain.com
+gitea_mailer_user: ""
+gitea_mailer_password: ""
+gitea_noreplay_address: "mydomain.com"
+
+
+

@@ -1,0 +1,17 @@
+---
+- name: Install the Chrony package
+  apt: name=chrony state={{ chrony_pkg_state }}
+
+- name: Copy the chrony.conf template file
+  template:
+    src: chrony.conf.j2
+    dest: "{{ chrony_config_location }}"
+  notify:
+    - restart chrony
+
+- name: Start and enable chrony service
+  service:
+    name: "{{ chrony_service_name }}"
+    state: "{{ chrony_service_state }}"
+    enabled: "{{ chrony_service_enabled }}"
+

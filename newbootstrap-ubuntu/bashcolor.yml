@@ -1,0 +1,7 @@
+---
+- name: Set new c00l bash colors
+  hosts: server
+  become: yes
+  roles:
+    - bashcolor
+

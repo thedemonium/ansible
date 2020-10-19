@@ -1,0 +1,34 @@
+---
+- name: add email to send reports
+  template: src=zed.rc dest={{zedrc_target_file}} owner=root group=root mode=644
+
+- name: Set Hostname
+  action: replace dest=/etc/zfs/zed.d/zed.rc  regexp='HOSTNAME' replace='{{ ansible_hostname }}' backup=no
+
+- name: Replace cron job file
+  template: src=zfsutils-linux dest={{zfsutils_linux_target_file}} owner=root group=root mode=644
+
+- name: Restart cron service
+  service: name=cron state=restarted
+
+
+- name: Set Postfix option hostname
+  debconf: name=postifx question="postfix/mailname" value="{{ansible_fqdn}}" vtype="string"
+
+- name: Set Postfix option type as internet site
+  debconf: name=postfix question="postfix/main_mailer_type" value="'Internet Site'" vtype="string"
+
+- name: Install Postfix
+  apt: package={{ item }} state=installed force=yes update_cache=yes cache_valid_time=3600
+  with_items:
+    - postfix
+    - mailutils
+
+- name: set relayhost /etc/postfix/main.cf
+  lineinfile: dest="/etc/postfix/main.cf" regexp='^relayhost' line='relayhost = 192.168.0.7' create=yes backup=yes
+
+- name: set loopback-only inet_interfaces /etc/postfix/main.cf
+  lineinfile: dest="/etc/postfix/main.cf" regexp='^inet_interfaces' line='inet_interfaces = loopback-only' create=yes backup=yes
+
+- name: Restart postfix service
+  service: name=postfix state=restarted

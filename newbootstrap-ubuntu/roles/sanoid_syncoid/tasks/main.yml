@@ -1,0 +1,74 @@
+---
+- name: Copy deb to /tmp
+  copy: src='{{ local_packages_repo }}/sanoid_syncoid/' dest=/tmp/sanoid_syncoid
+
+- name: Install .deb using dpkg
+  apt:
+    deb: '{{ item }}'
+    state: installed
+  with_items:
+    - /tmp/sanoid_syncoid/sanoid_2.0.2_all.deb
+
+- name: Installing lzop mbuffer
+  action: apt pkg={{ item }} state=present
+  with_items:
+    - lzop
+    - mbuffer
+
+- name: Add new crontab job
+  lineinfile:
+    dest: /etc/crontab
+    line: '{{ item }}'
+  with_items:
+    - '##### example Syncoid sync snaps to another server by Ansible #####'
+    - '#30 3 * * * root /etc/sanoid/syncoid_sync_snaps.sh'
+
+
+- name: Create /etc/sanoid/sanoid.conf
+  file:
+    path: "/etc/sanoid/sanoid.conf"
+    state: touch
+
+- name: Create /etc/sanoid/syncoid_sync_snaps.sh
+  file:
+    path: "/etc/sanoid/syncoid_sync_snaps.sh"
+    state: touch
+
+- name: Add conf /etc/sanoid/sanoid.conf
+  lineinfile:
+    dest: /etc/sanoid/sanoid.conf
+    line: '{{ item }}'
+  with_items:
+    - '[z7z/lxd/containers]'
+    - '    use_template = production'
+    - '    recursive = yes'
+    - '    process_children_only = yes'
+    - '######'
+    - '[template_production]'
+    - '    frequently = 0'
+    - '    hourly = 0'
+    - '    daily = 10'
+    - '    monthly = 0'
+    - '    yearly = 0'
+    - '    autosnap = yes'
+    - '    autoprune = yes'
+    - '    daily_hour = 23'
+    - '    daily_min = 59'
+
+
+- name: Add example sync script /etc/sanoid/syncoid_sync_snaps.sh
+  lineinfile:
+    dest: /etc/sanoid/syncoid_sync_snaps.sh
+    line: '{{ item }}'
+  with_items:
+    - '#!/bin/bash'
+    - '#'
+    - '# Sync ROOT'
+    - '#/usr/sbin/syncoid --create-bookmark --force-delete -r --no-sync-snap syspool/ROOT/ubuntu root@lxc-office2.local:z5z2/backups/lxc-psk/syspool'
+    - '# Sync Containers'
+    - '#/usr/sbin/syncoid --create-bookmark --force-delete -r --no-sync-snap z7z/lxd/containers root@lxc-office2.local:z5z2/backups/lxc-psk'
+
+- name: Restart service cron
+  service:
+    name: cron
+    state: restarted

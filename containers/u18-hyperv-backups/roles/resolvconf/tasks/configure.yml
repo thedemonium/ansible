@@ -1,0 +1,8 @@
+---
+- name: Create a symbolic link resolv.conf
+  file:
+    src: /var/run/systemd/resolve/resolv.conf
+    dest: /etc/resolv.conf
+  become: true
+  notify: resolvconf stop
+

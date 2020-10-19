@@ -1,0 +1,8 @@
+[u18-imapsync]
+
+u18-pgbench ansible_connection=lxd
+
+[lxd]
+
+localhost
+

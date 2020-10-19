@@ -1,0 +1,8 @@
+[u18-zabbix]
+
+u18-zabbix ansible_connection=lxd
+
+[lxd]
+
+localhost
+

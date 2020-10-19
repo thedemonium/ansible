@@ -1,0 +1,8 @@
+[u18-blackhost]
+
+u18-blackhost ansible_connection=lxd
+
+[lxd]
+
+localhost
+

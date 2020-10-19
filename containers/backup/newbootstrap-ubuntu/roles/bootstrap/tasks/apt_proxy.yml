@@ -1,0 +1,10 @@
+---
+- name: Remove configuration apt.conf
+  file: path=/etc/apt/apt.conf state=absent
+- name: Configure proxy apt.conf
+  blockinfile:
+    dest: /etc/apt/apt.conf
+    create: yes
+    block: |
+      Acquire::http::proxy "http://192.168.2.4:3128/";
+      Acquire::https::proxy "https://192.168.2.4:3128/";

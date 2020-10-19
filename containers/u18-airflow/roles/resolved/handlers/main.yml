@@ -1,0 +1,5 @@
+---
+- name:       Applying Resolved Configuration
+  command:    systemctl restart systemd-resolved
+  listen:     resolved apply config
+  when:       resolved_apply

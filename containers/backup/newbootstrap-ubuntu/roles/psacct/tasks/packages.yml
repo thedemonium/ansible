@@ -1,0 +1,9 @@
+---
+- name: Install packages
+  action: apt pkg={{ item }} state=present
+  with_items:
+    - acct
+
+- name: Restart service
+  service: name=acct state=restarted
+

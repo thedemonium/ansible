@@ -1,0 +1,7 @@
+- name: chocolatey with ansible
+  hosts: test_windows
+  tasks:
+    - name: Install Latest Chocolate
+      win_chocolatey:
+       name: all
+       state: latest

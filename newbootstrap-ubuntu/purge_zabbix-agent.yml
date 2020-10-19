@@ -1,0 +1,6 @@
+---
+- name: Purge Zabbix Agent Installation
+  hosts: server
+  become: yes
+  roles:
+    - purge_zabbix-agent

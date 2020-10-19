@@ -1,0 +1,7 @@
+- name: chocolatey with ansible
+  hosts: test_windows
+  tasks:
+    - name: Install bginfo
+      win_chocolatey:
+       name: bginfo
+       state: present

@@ -1,0 +1,7 @@
+- name: chocolatey with ansible
+  hosts: test_windows
+  tasks:
+    - name: Install Notepad
+      win_chocolatey:
+       name: notepadplusplus.install
+       version: '7.3'

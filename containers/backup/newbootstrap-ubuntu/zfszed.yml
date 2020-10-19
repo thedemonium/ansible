@@ -1,0 +1,6 @@
+---
+- name: Setup Zfs ZED
+  hosts: server
+  become: yes
+  roles:
+    - zfszed

@@ -1,0 +1,7 @@
+---
+- name: Install Iptables Persistent
+  hosts: server
+  become: yes
+  roles:
+    - iptables_persistent
+

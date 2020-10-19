@@ -1,0 +1,12 @@
+- name: Remove configuration /etc/ntp.conf
+  file: path=/etc/ntp.conf state=absent
+- name: Configure /etc/ntp.conf
+  blockinfile:
+    dest: /etc/ntp.conf
+    create: yes
+    block: |
+      server {{ ntp_server }}
+      minpoll 4
+      maxpoll 10
+- name: Update service
+  service: name=ntp state=restarted

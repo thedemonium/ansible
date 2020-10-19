@@ -1,0 +1,8 @@
+[u18-webinars]
+
+u18-webinars ansible_connection=lxd
+
+[lxd]
+
+localhost
+

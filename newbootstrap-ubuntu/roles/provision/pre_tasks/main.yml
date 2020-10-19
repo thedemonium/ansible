@@ -1,0 +1,3 @@
+---
+- name: 'python-simplejson'
+  raw: apt -y install python-simplejson

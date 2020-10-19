@@ -1,0 +1,4 @@
+---
+- name: Disable IPV6 by sysctl.d
+  template: src=sysctl.d/999-ipv6.conf dest=/etc/sysctl.d/999-ipv6.conf
+

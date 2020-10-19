@@ -1,0 +1,20 @@
+---
+-
+  hosts: test_ubuntu
+  become: yes
+  tasks:
+    - name: Update apt
+      apt: update_cache=yes
+    - name: imstall latest debconf-utils
+      apt: name=mc state=latest
+    - name: imstall latest ocsinventory-agent
+      apt: name=mc state=latest
+    - name: Remove configuration ocsinventory-agent.cfg
+      file: path=/etc/ocsinventory/ocsinventory-agent.cfg state=absent
+    - name: Configure ocsinventory-agent.cfg
+      blockinfile:
+        dest: /etc/ocsinventory/ocsinventory-agent.cfg
+        create: yes
+        block: |
+          server=inventory.volhonka.fwheel.com
+

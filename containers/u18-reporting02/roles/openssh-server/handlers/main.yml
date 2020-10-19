@@ -1,0 +1,5 @@
+---
+- name: Restart sshd
+  service: name={{ sshd_service_name }} state=restarted
+  listen:  restart sshd
+  when: sshd_apply

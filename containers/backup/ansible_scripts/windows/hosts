@@ -1,0 +1,16 @@
+[all_windows]
+srv-files.lt.local ansible_winrm_server_cert_validation=ignore
+portal.lt.local ansible_winrm_server_cert_validation=ignore
+srv-ad1.lt.local ansible_winrm_server_cert_validation=ignore
+srv-ad2.lt.local ansible_winrm_server_cert_validation=ignore
+srv-adm1.lt.local ansible_winrm_server_cert_validation=ignore
+srv-ibm.it.local ansible_winrm_server_cert_validation=ignore
+srv-lanbase.lt.local ansible_winrm_server_cert_validation=ignore
+
+[test_windows]
+#srv-files ansible_winrm_server_cert_validation=ignore
+srv-buh ansible_winrm_server_cert_validation=ignore
+#srv-ibm  ansible_winrm_server_cert_validation=ignore
+#srv-lanbase ansible_winrm_server_cert_validation=ignore
+#srv-ad1 ansible_winrm_server_cert_validation=ignore
+#srv-ad2 ansible_winrm_server_cert_validation=ignore

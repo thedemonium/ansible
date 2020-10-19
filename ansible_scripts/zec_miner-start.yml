@@ -1,0 +1,13 @@
+---
+-
+  hosts: miners
+  become: yes
+  tasks:
+    - name: run miner
+      command: screen -S nheqminer -d -m /home/administrator/nheqminer/nheqminer/build/run.sh
+
+
+
+
+
+

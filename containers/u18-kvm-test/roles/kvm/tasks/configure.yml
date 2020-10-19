@@ -1,0 +1,4 @@
+---
+- name: mknod /dev/kvm
+  command: mknod /dev/kvm c 10 232
+  become: true

@@ -1,0 +1,11 @@
+--- 
+locale: 'en_US.UTF-8'
+language: 'en_US:en'
+timezone: 'Europe/Moscow'
+ntp_server: '192.168.0.3'
+color_prompt_target_file: /etc/profile.d/colorprompt.sh
+bashrc_color_prompt_target_file: /etc/skel/.bashrc
+zedrc_target_file: /etc/zfs/zed.d/zed.rc
+zfsutils_linux_target_file: /etc/cron.d/zfsutils-linux
+zabbix_server: "192.168.2.25"
+local_packages_repo: /home/demonium/ansible/newbootstrap-ubuntu/files

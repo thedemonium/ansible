@@ -1,0 +1,3 @@
+---
+- import_tasks: resolved.yml
+  when: resolved_enabled

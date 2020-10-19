@@ -1,0 +1,14 @@
+---
+-
+  hosts: miners
+  become: yes
+  tasks:
+    - name: sshd_config /etc/ssh/sshd_config
+      lineinfile: dest="/etc/ssh/sshd_config" regexp='^#PasswordAuthentication' line='PasswordAuthentication no' create=yes backup=yes
+    - name: restart sshd
+      command: service ssh restart
+
+
+
+
+
